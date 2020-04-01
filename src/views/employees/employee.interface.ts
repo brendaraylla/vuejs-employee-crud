@@ -3,7 +3,7 @@ export default class EmployeeInterface {
 
   name!: string;
 
-  age?: number;
+  age?: number | string;
 
   phone?: string;
 

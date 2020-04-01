@@ -211,6 +211,3 @@ export default class Home extends Vue {
   }
 }
 </script>
-
-<style lang="sass" scoped>
-</style>

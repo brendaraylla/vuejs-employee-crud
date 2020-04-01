@@ -3,11 +3,10 @@
     v-col(cols="12" sm="6")
       v-text-field.mt-5(
         v-model="editedEmployee.name"
-        :counter="15"
-        :rules="nameRules"
         label="Name"
         :disabled="isDeleting"
         required
+        :rules="[v => !!v || 'Field required']"
       )
     v-col(cols="12" sm="6")
       v-text-field.mt-5(
@@ -48,7 +47,3 @@ export default class EmployeeDialogContent extends Vue {
   private isDeleting?: boolean;
 }
 </script>
-
-<style lang="sass" scoped>
-
-</style>

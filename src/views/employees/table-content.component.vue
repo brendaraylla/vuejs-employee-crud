@@ -24,6 +24,7 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
+import EmployeeInterface from './employee.interface';
 
 @Component({})
 export default class TableContent extends Vue {
@@ -31,7 +32,7 @@ export default class TableContent extends Vue {
   private search!: string;
 
   @Prop()
-  private employees!: any;
+  private employees!: EmployeeInterface[];
 
   private headers = [
     {
@@ -46,11 +47,11 @@ export default class TableContent extends Vue {
     { text: 'Actions', value: 'actions', sortable: false },
   ];
 
-  private editItem(data: any) {
+  private editItem(data: EmployeeInterface) {
     this.$emit('edit-item', data);
   }
 
-  private deleteItem(data: any) {
+  private deleteItem(data: EmployeeInterface) {
     this.$emit('delete-item', data);
   }
 }
@@ -63,6 +64,8 @@ export default class TableContent extends Vue {
   &::v-deep
     tr:hover
       background-image: linear-gradient(to right, #486dce8c, #933bdc42) !important
+    thead > tr
+      background-image: linear-gradient(to right, #486dce, #933bdc63)
     +media-xs
       tbody > tr
         display: flex
@@ -72,6 +75,7 @@ export default class TableContent extends Vue {
         padding: 10px 0
         > td
           width: 50%
+          margin: auto
           &:last-child
             border: none !important
           > .v-data-table__mobile-row__cell
@@ -79,7 +83,4 @@ export default class TableContent extends Vue {
             white-space: nowrap
             overflow: hidden
             text-overflow: ellipsis
-    +media-min-sm
-      thead > tr
-        background-image: linear-gradient(to right, #486dce, #933bdc63) !important
 </style>

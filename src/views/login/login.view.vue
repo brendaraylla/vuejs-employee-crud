@@ -8,29 +8,30 @@
             h1.text-center.mb-5 Log in to your account!
             v-form.my-4(
               ref="form"
-              v-model="valid"
               lazy-validation
+               @submit.prevent="submit"
             )
               v-text-field.mt-5(
-                v-model="name"
+                v-model="user.name"
                 :counter="10"
-                :rules="nameRules"
-                label="Username"
+                :rules="[rules.required]"
                 required
+                ref="name"
+                label="Username"
               )
               v-text-field.my-5(
-                :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                :type="showPassword ? 'text' : 'password'"
+                v-model="user.password"
                 name="input-10-2"
                 label="Password"
-                hint="At least 8 characters"
-                value="wqfasds"
                 class="input-group--focused"
+                :rules="[rules.required, rules.minLength]"
+                :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                :type="showPassword ? 'text' : 'password'"
+                required
+                ref="password"
                 @click:append="showPassword = !showPassword"
               )
-            v-layout.mt-5.login__action(justify-center)
-              v-flex.xs12
-                v-btn.primary(block large @click="login") Log in
+              v-btn.primary(block type="submit" large) Log in
 </template>
 
 <script lang="ts">
@@ -40,8 +41,39 @@ import { Component, Vue } from 'vue-property-decorator';
 export default class Login extends Vue {
   private showPassword = false;
 
-  private login() {
-    this.$router.push({ name: 'employees' });
+  private formHasErrors = false;
+
+  private rules = {
+    required: (v: any) => !!v || 'Field required',
+  }
+
+  private user = {
+    name: '',
+    password: '',
+  };
+
+  private get getForm(): any {
+    return {
+      name: this.user.name,
+      password: this.user.password,
+    };
+  }
+
+  private validateForm() {
+    this.formHasErrors = false;
+    Object.keys(this.getForm).forEach((field) => {
+      if (!this.getForm[field]) this.formHasErrors = true;
+      this.$refs[field].validate(true);
+    });
+  }
+
+  private async submit() {
+    await this.validateForm();
+    if (!this.formHasErrors) {
+      localStorage.setItem('user', this.user.name);
+      this.$store.dispatch('setName', this.user.name);
+      this.$router.push({ name: 'employees' });
+    }
   }
 }
 </script>

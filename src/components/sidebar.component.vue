@@ -1,43 +1,66 @@
 <template lang="pug">
-  v-card
-    v-navigation-drawer(
+  v-card(v-if="$vuetify.breakpoint.smAndUp")
+    v-navigation-drawer.sidebar(
       v-model="drawer"
       :mini-variant.sync="mini"
+      :temporary="!mini"
+      expand-on-hover
       permanent
+      app
     )
       v-list-item(class="px-2")
         v-list-item-avatar
-          v-img(src="https://randomuser.me/api/portraits/men/85.jpg")
-        v-list-item-title John Leider
-
+          v-img(src="https://randomuser.me/api/portraits/lego/1.jpg")
+        v-list-item-title.text-capitalize.ml-2.font-weight-bold
+          | {{ getUser }}
         v-btn(
           icon
           @click.stop="mini = !mini"
         )
           v-icon mdi-chevron-left
-
       v-divider
-
       v-list(dense)
         v-list-item(
-          v-for="n in 3"
+          v-for="item in items"
+          :to="item.route"
           link
         )
-          //- :key="item.title"
           v-list-item-icon
-            v-icon ICONE
-
+            v-icon {{ item.icon }}
           v-list-item-content
-            v-list-item-title TITULO
+            v-list-item-title {{ item.title }}
+      template(v-slot:append)
+        .pa-2
+          v-btn.pl-3(text block)
+            v-icon mdi-logout
+            span(v-if="!mini" @click.sync="logout") Logout
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 
 @Component({})
-export default class SidebarComponent extends Vue {}
+export default class SidebarComponent extends Vue {
+  private drawer = true;
+
+  private items = [
+    { title: 'Employees', icon: 'mdi-account-group-outline', route: { name: 'employees' } },
+  ];
+
+  private mini = true;
+
+  private get getUser() {
+    return this.$store.state.User.name;
+  }
+
+  private logout() {
+    localStorage.clear();
+    this.$router.push({ name: 'login' });
+  }
+}
 </script>
 
 <style lang="sass" scoped>
-
+.sidebar
+  background-image: linear-gradient(to top, #121c35, #4c345f)
 </style>

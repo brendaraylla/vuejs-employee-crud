@@ -6,7 +6,7 @@
       width="500"
       :fullscreen="$vuetify.breakpoint.xsOnly"
     )
-      v-card
+      v-card.employee-dialog__card
         v-card-title(
           class="headline employee-dialog__title black"
           primary-title
@@ -85,6 +85,10 @@ export default class EmployeeDialog extends Vue {
 
 <style lang="sass" scoped>
 .employee-dialog
+  &__card
+    display: flex
+    flex-direction: column
+    justify-content: space-between
   &__title
     background-image: linear-gradient(to right, #933bdc, #486dce6b)
 </style>
