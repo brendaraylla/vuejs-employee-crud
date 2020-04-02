@@ -1,5 +1,5 @@
 export default class EmployeeInterface {
-  id!: number;
+  id!: string;
 
   name!: string;
 
@@ -9,9 +9,7 @@ export default class EmployeeInterface {
 
   email?: string;
 
-  role?: string;
-
-  constructor(data: EmployeeInterface = { id: 0, name: '' }) {
+  constructor(data: EmployeeInterface = { id: '', name: '' }) {
     Object.assign(this, data);
   }
 }

@@ -26,12 +26,6 @@
         label="Email"
         :disabled="isDeleting"
       )
-    v-col(cols="12" sm="6")
-      v-text-field.mt-5(
-        v-model="editedEmployee.role"
-        label="Role"
-        :disabled="isDeleting"
-      )
 </template>
 
 <script lang="ts">

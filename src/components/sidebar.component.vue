@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-card(v-if="$vuetify.breakpoint.smAndUp")
+  v-card
     v-navigation-drawer.sidebar(
       v-model="drawer"
       :mini-variant.sync="mini"
@@ -8,7 +8,7 @@
       permanent
       app
     )
-      v-list-item(class="px-2")
+      v-list-item.px-2.mt-2
         v-list-item-avatar
           v-img(src="https://randomuser.me/api/portraits/lego/1.jpg")
         v-list-item-title.text-capitalize.ml-2.font-weight-bold
@@ -31,9 +31,9 @@
             v-list-item-title {{ item.title }}
       template(v-slot:append)
         .pa-2
-          v-btn.pl-3(text block)
+          v-btn.pl-3(text block @click="logout")
             v-icon mdi-logout
-            span(v-if="!mini" @click.sync="logout") Logout
+            span(v-if="!mini") Logout
 </template>
 
 <script lang="ts">

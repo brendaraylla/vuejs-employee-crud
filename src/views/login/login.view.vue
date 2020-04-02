@@ -6,7 +6,7 @@
         v-card.login__card(width='100%')
           v-card-text
             h1.text-center.mb-5 Log in to your account!
-            v-form.my-4(
+            v-form(
               ref="form"
               lazy-validation
                @submit.prevent="submit"
@@ -90,13 +90,13 @@ export default class Login extends Vue {
     background-position: center
   &__card
     background-color: rgba(0,0,0, 0.2) !important
-    height: 70vh
+    height: 60vh
     &::v-deep
       .v-card__text
         height: 100%
         display: flex
         flex-direction: column
-        justify-content: space-around
+        justify-content: center
     +media-min-sm
       height: auto
   &__action

@@ -20,6 +20,9 @@ const routes = [
         path: '/',
         name: 'employees',
         component: Employees,
+        meta: {
+          title: 'Employees',
+        },
       },
     ],
   },

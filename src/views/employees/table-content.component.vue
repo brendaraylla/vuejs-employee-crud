@@ -43,7 +43,6 @@ export default class TableContent extends Vue {
     { text: 'Age', value: 'age' },
     { text: 'Phone', value: 'phone', sortable: false },
     { text: 'Email', value: 'email' },
-    { text: 'Role', value: 'role' },
     { text: 'Actions', value: 'actions', sortable: false },
   ];
 
@@ -78,6 +77,10 @@ export default class TableContent extends Vue {
           margin: auto
           &:last-child
             border: none !important
+            > .v-data-table__mobile-row__header
+              display: none
+            > .v-data-table__mobile-row__cell
+              margin: auto
           > .v-data-table__mobile-row__cell
             margin-left: 10px
             white-space: nowrap

@@ -19,21 +19,22 @@
         v-divider
         v-card-actions
           v-spacer
-          div(v-if="!isDeleting")
-            v-btn.mr-2(
-              color="primary lighten-3"
-              text
-              @click="cancel"
-            ) Cancelar
-            v-btn(
-              color="primary lighten-3"
-              @click="save"
-            ) Salvar
-          v-btn(
-            v-else
+          v-btn.mr-2(
             color="primary lighten-3"
-            @click="deleteEmployee"
-          ) Confirmar
+            text
+            @click="cancel"
+          ) Cancelar
+          div
+            v-btn(
+              v-if="!isDeleting"
+              color="primary lighten-3"
+              @click="saveEmployee"
+            ) Salvar
+            v-btn(
+              v-else
+              color="primary lighten-3"
+              @click="deleteEmployee"
+            ) Confirmar
 </template>
 
 <script lang="ts">
@@ -69,16 +70,16 @@ export default class EmployeeDialog extends Vue {
     return 'New';
   }
 
-  private save() {
+  private saveEmployee() {
     this.$emit('save');
   }
 
   private deleteEmployee() {
-    this.$emit('delete-employee');
+    this.$emit('delete');
   }
 
   private cancel() {
-    this.showModal = false;
+    this.$emit('cancel');
   }
 }
 </script>
