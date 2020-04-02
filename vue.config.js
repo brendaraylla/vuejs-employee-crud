@@ -1,4 +1,5 @@
 module.exports = {
+  publicPath: '/vuejs-employee-crud/',
   devServer: {
     proxy: {
       '/mockapi': {
