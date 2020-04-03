@@ -60,10 +60,11 @@ export default class Login extends Vue {
   }
 
   private validateForm() {
+    const ref: any = this.$refs;
     this.formHasErrors = false;
     Object.keys(this.getForm).forEach((field) => {
       if (!this.getForm[field]) this.formHasErrors = true;
-      this.$refs[field].validate(true);
+      ref[field].validate(true);
     });
   }
 

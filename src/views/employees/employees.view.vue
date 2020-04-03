@@ -2,22 +2,7 @@
 <template lang="pug">
   .employees
     v-container.employees__container
-      v-row(align="center" wrap)
-        v-col(v-if="$vuetify.breakpoint.smAndUp" cols="6" sm="3")
-          h1 Employees
-        v-col(cols="12" sm="7" md="6")
-          v-text-field(
-            label="Search"
-            v-model="search"
-            append-icon="mdi-magnify"
-          )
-        v-col(cols="6" sm="2" md="3" align="end" :class="$vuetify.breakpoint.xsOnly ? 'pa-0' : ''")
-          v-btn.employees__btn-new(color="primary" @click="newEmployee")
-            v-icon(
-                small
-                class="mr-2"
-              ) mdi-plus
-            span New
+      employees-header(@search="setSearch" @new-employee="newEmployee")
       table-content.employees__table(
         :search="search"
         :employees="employees"
@@ -37,12 +22,15 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import { snackbarEvent } from '@/services/snackbar-event';
 import EmployeeService from '@/services/employee.service';
 import TableContent from './table-content.component.vue';
 import EmployeeDialog from './employee-dialog.component.vue';
+import EmployeesHeader from './employees-header.component.vue';
 import EmployeeInterface from './employee.interface';
+import { SnackbarInterface } from '../../components/snackbar/snackbar.interface';
 
-@Component({ components: { TableContent, EmployeeDialog } })
+@Component({ components: { TableContent, EmployeeDialog, EmployeesHeader } })
 export default class Home extends Vue {
   private showDialog = false;
 
@@ -52,17 +40,18 @@ export default class Home extends Vue {
 
   private employeeInFocus: EmployeeInterface = new EmployeeInterface();
 
-  private indexOf = -1;
-
   private isEditing = false;
 
   private isDeleting = false;
 
   private service: EmployeeService = new EmployeeService();
 
+  private setSearch(value: string) {
+    this.search = value;
+  }
+
   private prepareEmployeeModal(data: EmployeeInterface) {
     this.employeeInFocus = { ...data };
-    this.indexOf = this.employees.indexOf(data);
     this.toggleModal(true);
   }
 
@@ -86,17 +75,56 @@ export default class Home extends Vue {
     this.toggleModal(false);
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  private snackbarSuccess(type: string) {
+    snackbarEvent.showSnackbar({
+      type: 'success',
+      message: `${type} employee success!`,
+    });
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  private snackbarError(type: string) {
+    snackbarEvent.showSnackbar({
+      type: 'error',
+      message: `Error ${type} employee. Please, try again!`,
+    });
+  }
+
+  private putEmployee() {
+    this.service.putEmployee(new EmployeeInterface(this.employeeInFocus))
+      .then(() => {
+        this.snackbarSuccess('Edit');
+      }).catch(() => {
+        this.snackbarError('edit');
+      });
+  }
+
+  private postEmployee() {
+    this.service.postEmployee(new EmployeeInterface(this.employeeInFocus))
+      .then(() => {
+        this.snackbarSuccess('Add');
+      }).catch(() => {
+        this.snackbarError('add');
+      });
+  }
+
   private modalSaveEmployee() {
-    if (this.indexOf > -1) {
-      this.service.putEmployee(new EmployeeInterface(this.employeeInFocus));
+    if (this.employeeInFocus.id) {
+      this.putEmployee();
     } else {
-      this.service.postEmployee(new EmployeeInterface(this.employeeInFocus));
+      this.postEmployee();
     }
     this.closeAndCleanEditEmployee();
   }
 
   private modalDeleteEmployee() {
-    this.service.deleteEmployee(this.employeeInFocus.id);
+    this.service.deleteEmployee(this.employeeInFocus.id)
+      .then(() => {
+        this.snackbarSuccess('Delete');
+      }).catch(() => {
+        this.snackbarError('delete');
+      });
     this.closeAndCleanEditEmployee();
   }
 
@@ -104,7 +132,6 @@ export default class Home extends Vue {
     this.toggleModal(false);
     setTimeout(() => {
       this.employeeInFocus = new EmployeeInterface();
-      this.indexOf = -1;
       this.isDeleting = false;
       this.isEditing = false;
       this.getEmployees();
@@ -119,6 +146,8 @@ export default class Home extends Vue {
   private getEmployees() {
     this.service.getEmployees().then((resp: EmployeeInterface[]) => {
       this.employees = resp;
+    }).catch(() => {
+      this.snackbarError('get');
     });
   }
 
@@ -136,9 +165,4 @@ export default class Home extends Vue {
       padding-top: 0
     &__table
       margin-bottom: 30px
-    &__btn-new
-      position: fixed
-      bottom: 10px
-      right: 10px
-      z-index: 1
 </style>
