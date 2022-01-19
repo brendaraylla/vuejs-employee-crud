@@ -7,7 +7,7 @@
         template(v-slot:activator="{ on }")
           v-btn(icon light v-on="on")
             v-avatar(size=40)
-              v-img(src="https://randomuser.me/api/portraits/lego/1.jpg")
+              v-img(:src="getPicture || 'https://randomuser.me/api/portraits/lego/1.jpg'")
         v-list.pa-0
           v-list-item
             v-btn(@click="logout" text)
@@ -22,6 +22,10 @@ import { Component, Vue } from 'vue-property-decorator';
 export default class MobileHeader extends Vue {
   private get getTitle(): string {
     return this.$route.meta.title || '';
+  }
+
+  private get getPicture() {
+    return this.$store.state.User.picture;
   }
 
   private logout() {

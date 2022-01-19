@@ -10,7 +10,7 @@
     )
       v-list-item.px-2.mt-2
         v-list-item-avatar
-          v-img(src="https://randomuser.me/api/portraits/lego/1.jpg")
+          v-img(:src="getPicture || 'https://randomuser.me/api/portraits/lego/1.jpg'")
         v-list-item-title.text-capitalize.ml-2.font-weight-bold
           | {{ getUser }}
         v-btn(
@@ -53,8 +53,14 @@ export default class SidebarComponent extends Vue {
     return this.$store.state.User.name;
   }
 
+  private get getPicture() {
+    return this.$store.state.User.picture;
+  }
+
   private logout() {
-    localStorage.clear();
+    // localStorage.clear();
+    this.$store.commit('SET_CLEAR');
+
     this.$router.push({ name: 'login' });
   }
 }
