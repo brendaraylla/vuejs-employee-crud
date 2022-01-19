@@ -1,6 +1,10 @@
 # leads-employee-crud
 
-[Projeto](https://brendaraylla.github.io/vuejs-employee-crud/#/login)
+[See the project here!](https://brendaraylla.github.io/vuejs-employee-crud/#/login)
+user: admin
+password: admin123
+
+or connect with your facebook account
 
 ## Project setup
 ```

@@ -32,16 +32,40 @@
                 @click:append="showPassword = !showPassword"
               )
               v-btn.primary(block type="submit" large) Log in
+              v-row(align="center")
+                v-col(cols="12")
+                  h5(class="text-center") or connect with your facebook account
+              facebook-login(
+                class="fb-button"
+                appId="3246529549007417"
+                @login="onLogin"
+                @logout="onLogout"
+                @get-initial-status="getUserData"
+                @sdk-loaded="sdkLoaded"
+              )
 </template>
 
 <script lang="ts">
+import facebookLogin from 'facebook-login-vuejs';
 import { Component, Vue } from 'vue-property-decorator';
 
-@Component({})
+@Component({ components: { facebookLogin } })
 export default class Login extends Vue {
   private showPassword = false;
 
   private formHasErrors = false;
+
+  private isConnected = false;
+
+  private name = '';
+
+  private email = '';
+
+  private personalID = '';
+
+  private picture = '';
+
+  private FB = undefined;
 
   private rules = {
     required: (v: any) => !!v || 'Field required',
@@ -63,7 +87,7 @@ export default class Login extends Vue {
     const ref: any = this.$refs;
     this.formHasErrors = false;
     Object.keys(this.getForm).forEach((field) => {
-      if (!this.getForm[field]) this.formHasErrors = true;
+      if (!this.getForm[field] || this.getForm.name !== 'admin' || this.getForm.password !== 'admin123') this.formHasErrors = true;
       ref[field].validate(true);
     });
   }
@@ -75,6 +99,31 @@ export default class Login extends Vue {
       this.$store.dispatch('setName', this.user.name);
       this.$router.push({ name: 'employees' });
     }
+  }
+
+  private getUserData() {
+    this.FB.api('/me', 'GET', { fields: 'id,name,email,picture' },
+      (user: { id: string; email: string; name: string; picture: { data: { url: string } } }) => {
+        this.personalID = user.id;
+        this.email = user.email;
+        this.name = user.name;
+        this.picture = user.picture.data.url;
+      });
+  }
+
+  sdkLoaded(payload: any) {
+    this.isConnected = payload.isConnected;
+    this.FB = payload.FB;
+    if (this.isConnected) this.getUserData();
+  }
+
+  onLogin() {
+    this.isConnected = true;
+    this.getUserData();
+  }
+
+  onLogout() {
+    this.isConnected = false;
   }
 }
 </script>
@@ -108,4 +157,16 @@ export default class Login extends Vue {
     top: 50%
     left: 50%
     transform: translate(-50%, -50%)
+
+.fb-button
+  width: 100%
+  padding: 0
+  &::v-deep
+    button
+      width: 100%
+      height: 44px
+      border-radius: 4px
+    .spinner
+      height: 30px
+
 </style>
